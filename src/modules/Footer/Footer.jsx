@@ -1,22 +1,24 @@
-import "./footer.scss";
+import classNames from "classnames";
+import s from "./Footer.module.scss";
+console.log("s: ", s);
 
 export const Footer = () => (
-  <footer className="footer">
-    <div className="container footer__container">
+  <footer className={s.footer}>
+    <div className={classNames("container", s.container)}>
       <img
-        className="footer__logo"
+        className={s.logo}
         src="img/logo.svg"
         alt="Логотип Mirano Flower Boutique"
       />
 
-      <address className="footer__address">
-        <a className="footer__mail" href="mailto:Mirano@gmail.com">
+      <address className={s.address}>
+        <a className={s.mail} href="mailto:Mirano@gmail.com">
           Mirano@gmail.com
         </a>
 
-        <ul className="footer__social-list">
-          <li className="footer__social-item">
-            <a className="footer__link" href="#" aria-label="канал в телеграм">
+        <ul className={s.socialList}>
+          <li className={s.socialItem}>
+            <a className={s.link} href="#" aria-label="канал в телеграм">
               <svg
                 width="28"
                 height="28"
@@ -31,8 +33,8 @@ export const Footer = () => (
             </a>
           </li>
 
-          <li className="footer__social-item">
-            <a className="footer__link" href="#" aria-label="канал в youtube">
+          <li className={s.socialItem}>
+            <a className={s.link} href="#" aria-label="канал в youtube">
               <svg
                 width="28"
                 height="28"
@@ -47,8 +49,8 @@ export const Footer = () => (
             </a>
           </li>
 
-          <li className="footer__social-item">
-            <a className="footer__link" href="#" aria-label="группа в вк">
+          <li className={s.socialItem}>
+            <a className={s.link} href="#" aria-label="группа в вк">
               <svg
                 width="28"
                 height="28"
@@ -65,21 +67,19 @@ export const Footer = () => (
         </ul>
       </address>
 
-      <div className="footer__developers">
-        <p className="footer__developers-title">
-          Проект сделан в учебных целях
-        </p>
+      <div className={s.developers}>
+        <p className={s.developersTitle}>Проект сделан в учебных целях</p>
 
-        <ul className="footer__developers-list">
-          <li className="footer__developers-item">
-            Designer:{" "}
-            <a className="footer__link" href="Anastasia_Ilina">
+        <ul className={s.developersList}>
+          <li className={s.developersItem}>
+            Designer:&nbsp;
+            <a className={s.link} href="Anastasia_Ilina">
               Anastasia Ilina
             </a>
           </li>
-          <li className="footer__developers-item">
-            Developer:{" "}
-            <a className="footer__link" href="maksim_leskin">
+          <li className={s.developersItem}>
+            Developer:&nbsp;
+            <a className={s.link} href="maksim_leskin">
               Makism Leskin
             </a>
           </li>
