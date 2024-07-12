@@ -23,3 +23,5 @@ export const debounce = (fn, msec) => {
     lastCallTimer = setTimeout(() => fn(...arg), msec);
   };
 };
+
+export const isNumber = (n) => !isNaN(parseInt(n) && isFinite(n));

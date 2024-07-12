@@ -1,24 +1,37 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./header.scss";
 import { toggleCart } from "../../redux/cartSlice";
+import { useState } from "react";
+import { fetchGoods } from "../../redux/goodsSlice";
+import { changeType } from "../../redux/filtersSlice";
 
-export const Header = () => {
+export const Header = ({ setTitleGoods }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const [searchValue, setSearchValue] = useState("");
 
   const handlerCartToggle = () => {
     dispatch(toggleCart());
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(fetchGoods({ search: searchValue }));
+    setTitleGoods("Результат поиска:");
+    dispatch(changeType(""));
+  };
+
   return (
     <header className="header">
       <div className="container header__container">
-        <form className="header__form" action="#">
+        <form className="header__form" action="#" onSubmit={handleSubmit}>
           <input
             className="header__input"
             type="search"
             name="search"
             placeholder="Букет из роз"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
           <button className="header__search-button" aria-label="начать поиск">
             <svg

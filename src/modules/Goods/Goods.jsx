@@ -5,7 +5,7 @@ import "./goods.scss";
 
 import { API_URL } from "../../const";
 
-export const Goods = () => {
+export const Goods = ({ title }) => {
   const {
     items: goods,
     status: goodsStatus,
@@ -18,7 +18,7 @@ export const Goods = () => {
     content = <p>Loading...</p>;
   }
 
-  if (goodsStatus === "success") {
+  if (goodsStatus === "success" && goods.length) {
     content = (
       <ul className="goods__list">
         {goods.map((item) => (
@@ -37,6 +37,10 @@ export const Goods = () => {
     );
   }
 
+  if (!goods.length) {
+    content = <p>По вашему запросу ничего не найдено</p>;
+  }
+
   if (goodsStatus === "failed") {
     content = <p>{error}</p>;
   }
@@ -45,7 +49,7 @@ export const Goods = () => {
     <section className="goods">
       <div className="container goods__container">
         <div className="goods__box">
-          <h2 className="goods__title">Цветы</h2>
+          <h2 className="goods__title">{title}</h2>
 
           {content}
         </div>

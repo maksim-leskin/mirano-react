@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import s from "./Footer.module.scss";
-console.log("s: ", s);
 
 export const Footer = () => (
   <footer className={s.footer}>
