@@ -90,6 +90,7 @@ const orderSlice = createSlice({
       state.data = { ...state.data, ...action.payload };
     },
   },
+  extraReducers: (builder) => {},
 });
 
 export const { openModal, closeModal, updateOrderData, clearOrder } =
