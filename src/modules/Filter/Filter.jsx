@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGoods } from "../../redux/goodsSlice";
 import { debounce, getValidFilters } from "../../util";
 import { FilterRadio } from "./FilterRadio";
-import { changePrice, changeType } from "../../redux/filtersSlice";
+import {
+  changeCategory,
+  changePrice,
+  changeType,
+} from "../../redux/filtersSlice";
+import classNames from "classnames";
 
 const filterTypes = [
   { value: "bouquets", title: "Цветы" },
@@ -13,9 +18,10 @@ const filterTypes = [
   { value: "postcards", title: "Открытки" },
 ];
 
-export const Filter = ({ setTitleGoods }) => {
+export const Filter = ({ setTitleGoods, filterRef }) => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
+  const categories = useSelector((state) => state.goods.categories);
   const [openChoice, setOpenChoice] = useState(null);
 
   const prevFiltersRef = useRef({});
@@ -62,8 +68,13 @@ export const Filter = ({ setTitleGoods }) => {
     dispatch(changePrice({ name, value }));
   };
 
+  const handleCategoryChange = (category) => {
+    dispatch(changeCategory(category));
+    setOpenChoice(-1);
+  };
+
   return (
-    <section className="filter">
+    <section className="filter" ref={filterRef}>
       <h2 className="visually-hidden"></h2>
       <div className="container">
         <form className="filter__form">
@@ -103,38 +114,42 @@ export const Filter = ({ setTitleGoods }) => {
               </fieldset>
             </Choices>
 
-            <Choices
-              buttonLabel="Тип товара"
-              isOpen={openChoice === 1}
-              onToggle={() => handleChoicesToggle(1)}>
-              <ul className="filter__type-list">
-                <li className="filter__type-item">
-                  <button className="filter__type-button" type="button">
-                    Монобукеты
-                  </button>
-                </li>
-                <li className="filter__type-item">
-                  <button className="filter__type-button" type="button">
-                    Авторские букеты
-                  </button>
-                </li>
-                <li className="filter__type-item">
-                  <button className="filter__type-button" type="button">
-                    Цветы в коробке
-                  </button>
-                </li>
-                <li className="filter__type-item">
-                  <button className="filter__type-button" type="button">
-                    Цветы в корзине
-                  </button>
-                </li>
-                <li className="filter__type-item">
-                  <button className="filter__type-button" type="button">
-                    Букеты из сухоцветов
-                  </button>
-                </li>
-              </ul>
-            </Choices>
+            {categories.length ? (
+              <Choices
+                buttonLabel="Тип товара"
+                isOpen={openChoice === 1}
+                onToggle={() => handleChoicesToggle(1)}>
+                <ul className="filter__type-list">
+                  <li className="filter__type-item">
+                    <button
+                      className="filter__type-button"
+                      type="button"
+                      onClick={() => {
+                        handleCategoryChange("");
+                      }}>
+                      Все товары
+                    </button>
+                  </li>
+                  {categories.map((category) => (
+                    <li key={category} className="filter__type-item">
+                      <button
+                        className={classNames(
+                          "filter__type-button",
+                          category === filters.category
+                            ? "filter__type-button_active"
+                            : "",
+                        )}
+                        type="button"
+                        onClick={() => {
+                          handleCategoryChange(category);
+                        }}>
+                        {category}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </Choices>
+            ) : null}
           </fieldset>
         </form>
       </div>
