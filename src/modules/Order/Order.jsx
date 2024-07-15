@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import style from "./Order.module.scss";
-import { closeModal, sendOrder, updateOrderData } from "../../redux/orderSlice";
+
 import classNames from "classnames";
 import { useCallback, useEffect } from "react";
+import { closeModal, updateOrderData } from "../../redux/slices/orderSlice";
+import { sendOrder } from "../../redux/thunks/sendOrder";
 
 export const Order = () => {
   const dispatch = useDispatch();
@@ -69,6 +71,7 @@ export const Order = () => {
                     placeholder="Имя"
                     value={orderData.buyerName}
                     onChange={handleChange}
+                    required
                   />
                   <input
                     className={style.input}
@@ -77,6 +80,7 @@ export const Order = () => {
                     value={orderData.buyerPhone}
                     placeholder="Телефон"
                     onChange={handleChange}
+                    required
                   />
                 </div>
               </fieldset>
@@ -90,6 +94,7 @@ export const Order = () => {
                     value={orderData.recipientName}
                     placeholder="Имя"
                     onChange={handleChange}
+                    required
                   />
                   <input
                     className={style.input}
@@ -98,6 +103,7 @@ export const Order = () => {
                     value={orderData.recipientPhone}
                     placeholder="Телефон"
                     onChange={handleChange}
+                    required
                   />
                 </div>
               </fieldset>
@@ -111,6 +117,7 @@ export const Order = () => {
                     value={orderData.street}
                     placeholder="Улица"
                     onChange={handleChange}
+                    required
                   />
                   <input
                     className={classNames(style.input, style.input_min)}
@@ -119,6 +126,7 @@ export const Order = () => {
                     value={orderData.house}
                     placeholder="Дом"
                     onChange={handleChange}
+                    required
                   />
                   <input
                     className={classNames(style.input, style.input_min)}
@@ -127,6 +135,7 @@ export const Order = () => {
                     value={orderData.apartment}
                     placeholder="Квартира"
                     onChange={handleChange}
+                    required
                   />
                 </div>
               </fieldset>
@@ -145,11 +154,14 @@ export const Order = () => {
                   </label>
                 </div>
                 <div className={style.delivery}>
-                  <label htmlFor="delivery">Доставка 01.07</label>
+                  <label htmlFor="delivery">Дата доставки</label>
                   <input
-                    type="hidden"
+                    className={style.input}
+                    type="date"
                     name="deliveryDate"
                     value={orderData.deliveryDate}
+                    onChange={handleChange}
+                    required
                   />
                   <div className={style["select-wrapper"]}>
                     <select
@@ -157,7 +169,8 @@ export const Order = () => {
                       name="deliveryTime"
                       id="delivery"
                       value={orderData.deliveryTime}
-                      onChange={handleChange}>
+                      onChange={handleChange}
+                      required>
                       <option value="9-12">с 9:00 до 12:00</option>
                       <option value="12-15">с 12:00 до 15:00</option>
                       <option value="15-18">с 15:00 до 18:00</option>

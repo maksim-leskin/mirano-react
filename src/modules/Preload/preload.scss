@@ -1,8 +1,8 @@
-@use "../varibles" as *;
-@use "../media" as *;
+@use "@scss/varibles" as *;
+@use "@scss/media" as *;
 
 .preload {
-  display: none;
+  display: flex;
   position: absolute;
   inset: 0;
 

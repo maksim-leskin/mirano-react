@@ -1,30 +1,59 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./header.scss";
-import { toggleCart } from "../../redux/cartSlice";
-import { useState } from "react";
-import { fetchGoods } from "../../redux/goodsSlice";
-import { changeType } from "../../redux/filtersSlice";
+import { toggleCart } from "../../redux/slices/cartSlice";
+import { useEffect, useRef, useState } from "react";
+import { changeSearch, changeType } from "../../redux/slices/filtersSlice";
+import { fetchGoods } from "../../redux/thunks/fetchGoods";
+import { debounce } from "../../util";
 
-export const Header = ({ setTitleGoods, scrollToFilter }) => {
+export const Header = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const [searchValue, setSearchValue] = useState("");
+
+  const searchInputRef = useRef(null);
+  const headerRef = useRef(null);
 
   const handlerCartToggle = () => {
     dispatch(toggleCart());
   };
 
+  useEffect(() => {
+    document.body.style.paddingTop = `${headerRef.current.clientHeight}px`;
+    window.addEventListener(
+      "scroll",
+      debounce(() => {
+        console.dir(headerRef.current);
+        if (window.scrollY > 300) {
+          document.body.style.paddingTop = `${headerRef.current.clientHeight}px`;
+          headerRef.current.classList.add("header_fixed");
+        } else {
+          headerRef.current.classList.remove("header_fixed");
+        }
+      }, 200),
+    );
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(fetchGoods({ search: searchValue }));
-    setTitleGoods("Результат поиска:");
-    dispatch(changeType(""));
-    scrollToFilter();
-    setSearchValue("");
+    if (searchValue.trim() !== "") {
+      searchInputRef.current.style.cssText = "";
+      dispatch(changeSearch(searchValue));
+      setSearchValue("");
+    } else {
+      searchInputRef.current.style.cssText = `
+        outline: 2px solid tomato;
+        outlineOffset: 5px;
+     `;
+
+      setTimeout(() => {
+        searchInputRef.current.style.cssText = "";
+      }, 2000);
+    }
   };
 
   return (
-    <header className="header">
+    <header className="header" ref={headerRef}>
       <div className="container header__container">
         <form className="header__form" action="#" onSubmit={handleSubmit}>
           <input
@@ -34,6 +63,7 @@ export const Header = ({ setTitleGoods, scrollToFilter }) => {
             placeholder="Букет из роз"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+            ref={searchInputRef}
           />
           <button className="header__search-button" aria-label="начать поиск">
             <svg

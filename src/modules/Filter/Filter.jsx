@@ -2,14 +2,14 @@ import "./filter.scss";
 import { Choices } from "../Choices/Choices";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGoods } from "../../redux/goodsSlice";
+import { fetchGoods } from "../../redux/thunks/fetchGoods";
 import { debounce, getValidFilters } from "../../util";
 import { FilterRadio } from "./FilterRadio";
 import {
   changeCategory,
   changePrice,
   changeType,
-} from "../../redux/filtersSlice";
+} from "../../redux/slices/filtersSlice";
 import classNames from "classnames";
 
 const filterTypes = [
@@ -18,13 +18,15 @@ const filterTypes = [
   { value: "postcards", title: "Открытки" },
 ];
 
-export const Filter = ({ setTitleGoods, filterRef }) => {
+export const Filter = ({ setTitleGoods }) => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   const categories = useSelector((state) => state.goods.categories);
+
   const [openChoice, setOpenChoice] = useState(null);
 
-  const prevFiltersRef = useRef({});
+  const filterRef = useRef();
+  const prevFiltersRef = useRef(filters);
 
   const debouncedFetchGoods = useRef(
     debounce((filters) => {
@@ -33,20 +35,48 @@ export const Filter = ({ setTitleGoods, filterRef }) => {
   ).current;
 
   useEffect(() => {
-    const prevFilters = prevFiltersRef.current;
+    if (filters !== prevFiltersRef.current) {
+      filterRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    document.addEventListener("click", (e) => {
+      const target = e.target.closest(".filter__group_choices");
+      if (!target && (openChoice !== null || openChoice !== -1)) {
+        setOpenChoice(-1);
+      }
+    });
+  }, [openChoice]);
+
+  useEffect(() => {
+    const prevMinPrice = prevFiltersRef.current.minPrice;
+    const prevMaxPrice = prevFiltersRef.current.maxPrice;
+
     const validFilter = getValidFilters(filters);
 
-    if (!validFilter.type) {
+    if (!validFilter.type && !validFilter.search) {
       return;
     }
 
-    if (prevFilters.type !== validFilter.type) {
-      dispatch(fetchGoods(validFilter));
-      setTitleGoods(
-        filterTypes.find((item) => item.value === validFilter.type).title,
-      );
-    } else {
+    if (
+      prevMinPrice !== filters.minPrice ||
+      prevMaxPrice !== filters.maxPrice
+    ) {
       debouncedFetchGoods(validFilter);
+    } else {
+      dispatch(fetchGoods(validFilter));
+
+      const type = filterTypes.find((item) => item.value === validFilter.type);
+      console.log("type: ", type);
+
+      if (type) {
+        setTitleGoods(type.title);
+      }
+
+      if (validFilter.search) {
+        setTitleGoods("Результаты поска:");
+      }
     }
 
     prevFiltersRef.current = filters;
